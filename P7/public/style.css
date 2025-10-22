@@ -1,0 +1,25 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f7f9fb;
+  text-align: center;
+  padding: 30px;
+}
+
+h1 { color: #004aad; }
+
+.slide-btn {
+  background: linear-gradient(90deg, #007bff, #00aaff);
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 20px 40px;
+  font-size: 1.2em;
+  margin-top: 30px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.slide-btn:active {
+  transform: scale(0.97);
+  background: linear-gradient(90deg, #005bb5, #0088cc);
+}

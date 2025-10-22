@@ -1,0 +1,22 @@
+{
+  "name": "Touring Coach - Conductor",
+  "short_name": "TouringCoach",
+  "description": "Aplicación PWA para conductores de Touring Coach. Permite registrar el avance del servicio en tiempo real.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#004aad",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/image/touring.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/image/touring.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
