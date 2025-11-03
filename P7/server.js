@@ -19,7 +19,7 @@ app.use(express.static("public"));
 // })
 
 app.use((req, res, next) => {
-  console.log(`📦 Recurso solicitado: ${req.url}`);
+  console.log(`Recurso solicitado: ${req.url}`);
   next();
 });
 

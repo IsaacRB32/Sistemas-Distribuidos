@@ -43,3 +43,8 @@ CREATE TABLE eventos (
     FOREIGN KEY (id_conductor) REFERENCES conductores(id_conductor),
     FOREIGN KEY (id_accion) REFERENCES acciones(id_accion)
 );
+
+CREATE TABLE accion_estado (
+  id_accion INT PRIMARY KEY REFERENCES acciones(id_accion),
+  id_estado INT NOT NULL REFERENCES estado_servicio(id_estado)
+);

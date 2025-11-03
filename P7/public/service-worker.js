@@ -1,4 +1,4 @@
-console.log("📦 Service Worker cargado desde:", self.location.href);
+console.log("Service Worker cargado desde:", self.location.href);
 
 // Nombre de la caché
 const CACHE_NAME = "touringcoach-cache-v1";
@@ -16,10 +16,10 @@ const URLS_TO_CACHE = [
 
 // Instalación del Service Worker
 self.addEventListener("install", (event) => {
-  console.log("📦 Instalando Service Worker...");
+  console.log("Instalando Service Worker...");
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("📁 Archivos cacheados con éxito");
+      console.log("Archivos cacheados con éxito");
       return cache.addAll(URLS_TO_CACHE);
     })
   );
@@ -27,7 +27,7 @@ self.addEventListener("install", (event) => {
 
 // Activación del Service Worker
 self.addEventListener("activate", (event) => {
-  console.log("✅ Service Worker activado");
+  console.log("Service Worker activado");
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(keys.map((key) => key !== CACHE_NAME && caches.delete(key)))

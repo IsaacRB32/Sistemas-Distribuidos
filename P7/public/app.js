@@ -1,4 +1,9 @@
-const API_URL = "http://192.168.100.78:3000"; // URL base de tu API
+//CASA
+//const API_URL = "http://192.168.100.78:3000"; // URL base de la API
+
+//ESCUELA
+const API_URL = "http://10.100.82.179:3000"; // URL base de la API
+
 
 // Secuencia de acciones del conductor
 const acciones = [
@@ -19,7 +24,7 @@ let idConductor = 1;
 const boton = document.getElementById("boton");
 const estado = document.getElementById("estado");
 
-// ✅ Cargar datos del servicio
+//Cargar datos del servicio
 async function cargarServicio() {
   try {
     const res = await fetch(`${API_URL}/servicios/${idConductor}`);
@@ -40,7 +45,7 @@ async function cargarServicio() {
   }
 }
 
-// ✅ Registrar evento en la API
+//Registrar evento en la API
 async function registrarEvento() {
   const idAccion = pasoActual + 1;
   const accion = acciones[pasoActual];
@@ -58,7 +63,7 @@ async function registrarEvento() {
 
     const data = await res.json();
     if (res.ok) {
-      estado.textContent = `✅ ${accion} registrado (${data.evento.fecha_hora})`;
+      estado.textContent = `${accion} registrado (${data.evento.fecha_hora})`;
       pasoActual++;
       if (pasoActual < acciones.length) {
         boton.textContent = acciones[pasoActual];
@@ -81,10 +86,10 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker
       .register("/service-worker.js")
       .then((reg) =>
-        console.log("✅ Service Worker registrado:", reg.scope)
+        console.log("Service Worker registrado:", reg.scope)
       )
       .catch((err) =>
-        console.log("❌ Error al registrar Service Worker:", err)
+        console.log("Error al registrar Service Worker:", err)
       );
   });
 }

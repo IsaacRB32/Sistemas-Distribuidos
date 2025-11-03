@@ -1,0 +1,111 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f6fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  text-align: center;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 400px;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+#estado span {
+  font-weight: bold;
+  color: #3498db;
+}
+
+/* Recuadro de información */
+.conductor-info,
+.servicio-info {
+  background: #ecf0f1;
+  border-radius: 8px;
+  padding: 10px 15px;
+  text-align: left;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.conductor-info h3,
+.servicio-info h3 {
+  text-align: center;
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.slider-container {
+  margin-top: 25px;
+  position: relative;
+}
+
+.slider-track {
+  background: #e1e1e1;
+  border-radius: 50px;
+  height: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.slider {
+  background: #3498db;
+  color: white;
+  font-weight: bold;
+  height: 60px;
+  width: 150px;
+  border-radius: 50px;
+  line-height: 60px;
+  text-align: center;
+  cursor: grab;
+  position: absolute;
+  left: 0;
+  top: 0;
+  user-select: none;
+  transition: background 0.3s;
+}
+
+.slider:active {
+  cursor: grabbing;
+}
+
+.detalle {
+  font-size: 13px;
+  color: #666;
+  margin-top: 20px;
+}
+
+.eventos {
+  margin: 15px 0;
+  text-align: left;
+}
+
+.eventos h3 {
+  margin-bottom: 5px;
+  color: #2c3e50;
+  font-size: 16px;
+}
+
+#listaEventos {
+  background: #ecf0f1;
+  list-style: none;
+  padding: 10px;
+  border-radius: 8px;
+  height: 120px;
+  overflow-y: auto;
+  font-size: 13px;
+  color: #333;
+}
+
+#listaEventos li {
+  margin-bottom: 5px;
+  border-left: 3px solid #3498db;
+  padding-left: 6px;
+}
