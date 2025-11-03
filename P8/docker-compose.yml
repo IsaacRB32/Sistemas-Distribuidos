@@ -1,0 +1,112 @@
+
+services:
+  #  BASE DE DATOS POSTGRESQL
+  postgres-db:
+    image: postgres:16
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 324632
+      POSTGRES_DB: pwa
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./tables.sql:/docker-entrypoint-initdb.d/1_tables.sql
+      - ./llenado.sql:/docker-entrypoint-initdb.d/2_llenado.sql
+    networks:
+      - backend
+
+  #  MICROSERVICIOS
+  conductor-service:
+    build: ./conductor-service
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres-db
+    networks:
+      - backend
+    environment:
+      - DB_HOST=postgres-db
+      - DB_USER=postgres
+      - DB_PASSWORD=324632
+      - DB_NAME=pwa
+      - DB_PORT=5432
+
+  servicio-service:
+    build: ./servicio-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres-db
+    networks:
+      - backend
+    environment:
+      - DB_HOST=postgres-db
+      - DB_USER=postgres
+      - DB_PASSWORD=324632
+      - DB_NAME=pwa
+      - DB_PORT=5432
+
+  accion-service:
+    build: ./accion-service
+    ports:
+      - "3002:3002"
+    depends_on:
+      - postgres-db
+    networks:
+      - backend
+    environment:
+      - DB_HOST=postgres-db
+      - DB_USER=postgres
+      - DB_PASSWORD=324632
+      - DB_NAME=pwa
+      - DB_PORT=5432
+
+  evento-service:
+    build: ./evento-service
+    ports:
+      - "3003:3003"
+    depends_on:
+      - postgres-db
+    networks:
+      - backend
+    environment:
+      - DB_HOST=postgres-db
+      - DB_USER=postgres
+      - DB_PASSWORD=324632
+      - DB_NAME=pwa
+      - DB_PORT=5432
+
+  #  API GATEWAY
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - conductor-service
+      - servicio-service
+      - accion-service
+      - evento-service
+    networks:
+      - backend
+
+  # FRONTEND
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "8081:8081"
+    depends_on:
+      - api-gateway
+    networks:
+      - backend
+
+# RED Y VOLUMENES
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  pgdata:

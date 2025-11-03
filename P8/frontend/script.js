@@ -1,7 +1,9 @@
-const API_URL = "http://localhost:8080/api";
-const id_conductor = 1;
-const id_servicio = 1;
+// URL base del Gateway
+//const API_URL = "http://localhost:8080/api";
+//const API_URL = "http://api-gateway:8080/api";
+const API_URL = "/api";
 
+// Secuencia de acciones del conductor
 const acciones = [
   "Iniciar servicio",
   "Llegué al punto de reunión",
@@ -13,156 +15,115 @@ const acciones = [
   "Finalizar servicio"
 ];
 
-let pasoActual = 0;
-
-// Elementos DOM
-const slider = document.getElementById("sliderButton"); 
+// Variables del DOM
+const slider = document.getElementById("sliderButton");
 const sliderTrack = document.getElementById("sliderTrack");
-const label = document.getElementById("sliderLabel");
-const estado = document.querySelector("#estado span");
+const sliderLabel = document.getElementById("sliderLabel");
+const estadoSpan = document.querySelector("#estado span");
 const listaEventos = document.getElementById("listaEventos");
 
-// Datos del conductor
-const nombreConductor = document.getElementById("nombreConductor");
-const apellidoConductor = document.getElementById("apellidoConductor");
-const estadoConductor = document.getElementById("estadoConductor");
+// Datos
+let pasoActual = 0;
+let idConductor = 1;
+let idServicio = 1;
+let deslizando = false;
+let posInicial = 0;
 
-// Datos del servicio
-const lugarReunion = document.getElementById("lugarReunion");
-const destino = document.getElementById("destino");
-const horaReunion = document.getElementById("horaReunion");
-const horaRegreso = document.getElementById("horaRegreso");
-
-let dragging = false;
-let startX;
-let currentX;
-
-
-//   CARGAR DATOS DEL CONDUCTOR
-async function cargarConductor() {
+// 🧠 Cargar información del conductor y servicio desde los microservicios
+async function cargarDatos() {
   try {
-    const res = await fetch(`${API_URL}/conductores/${id_conductor}`);
-    const data = await res.json();
+    const conductorRes = await fetch(`${API_URL}/conductores`);
+    const servicioRes = await fetch(`${API_URL}/servicios`);
 
-    if (data) {
-      nombreConductor.textContent = data.nombre || "No disponible";
-      apellidoConductor.textContent = data.apellido || "No disponible";
-      estadoConductor.textContent = data.estado || "Activo";
-      estadoConductor.style.color =
-        data.estado === "activo" ? "#2ecc71" : "#e74c3c";
-    }
-  } catch (err) {
-    console.error("Error al cargar conductor:", err);
-    nombreConductor.textContent = "Error de conexión";
+    const [conductor] = await conductorRes.json();
+    const [servicio] = await servicioRes.json();
+
+    document.getElementById("nombreConductor").textContent = conductor.nombre;
+    document.getElementById("apellidoConductor").textContent = conductor.apellido;
+    document.getElementById("estadoConductor").textContent = conductor.estado;
+
+    document.getElementById("lugarReunion").textContent = servicio.lugar_reunion;
+    document.getElementById("destino").textContent = servicio.lugar_destino;
+    document.getElementById("horaReunion").textContent = servicio.hora_reunion;
+    document.getElementById("horaRegreso").textContent = servicio.hora_regreso;
+
+    estadoSpan.textContent = acciones[pasoActual];
+    sliderLabel.textContent = acciones[pasoActual];
+  } catch (error) {
+    console.error("❌ Error al cargar los datos:", error);
   }
 }
 
-
-//   CARGAR DETALLES DEL SERVICIO
-async function cargarServicio() {
-  try {
-    const res = await fetch(`${API_URL}/servicios/conductor/${id_conductor}`);
-    const data = await res.json();
-
-    if (data && data.length > 0) {
-      const servicio = data[0];
-      lugarReunion.textContent = servicio.lugar_reunion;
-      destino.textContent = servicio.lugar_destino;
-      horaReunion.textContent = servicio.hora_reunion;
-      horaRegreso.textContent = servicio.hora_regreso;
-      estado.textContent = servicio.estado;
-    } else {
-      lugarReunion.textContent = "No hay servicios asignados";
-      destino.textContent = "--";
-      horaReunion.textContent = "--";
-      horaRegreso.textContent = "--";
-    }
-  } catch (err) {
-    console.error("Error al cargar servicio:", err);
-    lugarReunion.textContent = "Error de conexión";
-  }
-}
-
-
-//   BOTÓN DESLIZANTE
-slider.addEventListener("mousedown", (e) => {
-  dragging = true;
-  startX = e.clientX;
-});
-
-document.addEventListener("mousemove", (e) => {
-  if (!dragging) return;
-  e.preventDefault();
-
-  const trackWidth = sliderTrack.offsetWidth - slider.offsetWidth;
-  currentX = e.clientX - startX;
-
-  if (currentX < 0) currentX = 0;
-  if (currentX > trackWidth) currentX = trackWidth;
-
-  slider.style.left = currentX + "px";
-});
-
-document.addEventListener("mouseup", async () => {
-  if (!dragging) return;
-  dragging = false;
-
-  const trackWidth = sliderTrack.offsetWidth - slider.offsetWidth;
-
-  if (currentX >= trackWidth - 10) {
-    await registrarEvento();
-  }
-
-  slider.style.left = "0px";
-});
-
-
-//   REGISTRAR EVENTO
+// 📤 Registrar evento en el microservicio de eventos
 async function registrarEvento() {
-  if (pasoActual >= acciones.length) {
-    alert("Servicio ya finalizado");
-    return;
-  }
-
   const accion = acciones[pasoActual];
-  label.textContent = "Enviando...";
+  const hora = new Date().toLocaleTimeString();
+
+  // Mostrar evento en pantalla
+  const li = document.createElement("li");
+  li.textContent = `${accion} - ${hora}`;
+  listaEventos.prepend(li);
 
   try {
-    const res = await fetch(`${API_URL}/eventos`, {
+    await fetch(`${API_URL}/eventos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        id_servicio,
-        id_conductor,
-        id_accion: pasoActual + 1,
+        id_conductor: idConductor,
+        id_servicio: idServicio,
+        id_accion: pasoActual + 1
       }),
     });
-    //obj js
-    const data = await res.json();
-
-    if (res.ok) {
-      estado.textContent = data.nuevo_estado;
-      estado.style.color = data.nuevo_estado === "Finalizado" ? "#2ecc71" : "#3498db";
-
-      const hora = new Date().toLocaleTimeString();
-      const li = document.createElement("li");
-      li.textContent = `${accion} - ${hora}`;
-      listaEventos.prepend(li);
-
-      pasoActual++;
-      label.textContent =
-        pasoActual < acciones.length ? acciones[pasoActual] : "Servicio finalizado";
-    } else {
-      alert("Error: " + data.error);
-      label.textContent = accion;
-    }
-  } catch (err) {
-    console.error(err);
-    alert("Error al conectar con el servidor.");
-    label.textContent = accion;
+  } catch (error) {
+    console.error("❌ Error al registrar evento:", error);
   }
+
+  // Actualizar estado visible
+  estadoSpan.textContent = accion;
+  sliderLabel.textContent =
+    pasoActual < acciones.length - 1
+      ? acciones[pasoActual + 1]
+      : "Servicio finalizado";
 }
 
-//   INICIO
-cargarConductor();
-cargarServicio();
+// 🎚️ Control manual del deslizador
+slider.addEventListener("mousedown", (e) => {
+  deslizando = true;
+  posInicial = e.clientX;
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (!deslizando) return;
+
+  const distancia = e.clientX - posInicial;
+  const limite = sliderTrack.clientWidth - slider.clientWidth;
+
+  // Mover visualmente
+  if (distancia >= 0 && distancia <= limite) {
+    slider.style.left = `${distancia}px`;
+  }
+
+  // Si llega al final → registrar evento
+  if (distancia > limite * 0.9) {
+    deslizando = false;
+    slider.style.left = "0";
+    pasoActual++;
+    if (pasoActual < acciones.length) {
+      registrarEvento();
+    } else {
+      estadoSpan.textContent = "Servicio finalizado";
+      sliderLabel.textContent = "✓";
+      slider.style.background = "#2ecc71";
+    }
+  }
+});
+
+document.addEventListener("mouseup", () => {
+  if (deslizando) {
+    deslizando = false;
+    slider.style.left = "0";
+  }
+});
+
+// 🚀 Inicialización
+cargarDatos();
