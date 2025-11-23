@@ -2,7 +2,7 @@
 //const API_URL = "http://192.168.100.78:3000"; // URL base de la API
 
 //ESCUELA
-const API_URL = "http://10.100.82.179:3000"; // URL base de la API
+const API_URL = ""; // URL base de la API
 
 
 // Secuencia de acciones del conductor
