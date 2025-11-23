@@ -1,0 +1,2 @@
+Flask
+gunicorn  # Servidor WSGI robusto para producción

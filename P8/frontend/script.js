@@ -29,7 +29,7 @@ let idServicio = 1;
 let deslizando = false;
 let posInicial = 0;
 
-// 🧠 Cargar información del conductor y servicio desde los microservicios
+// Cargar información del conductor y servicio desde los microservicios
 async function cargarDatos() {
   try {
     const conductorRes = await fetch(`${API_URL}/conductores`);
@@ -50,11 +50,11 @@ async function cargarDatos() {
     estadoSpan.textContent = acciones[pasoActual];
     sliderLabel.textContent = acciones[pasoActual];
   } catch (error) {
-    console.error("❌ Error al cargar los datos:", error);
+    console.error("Error al cargar los datos:", error);
   }
 }
 
-// 📤 Registrar evento en el microservicio de eventos
+// Registrar evento en el microservicio de eventos
 async function registrarEvento() {
   const accion = acciones[pasoActual];
   const hora = new Date().toLocaleTimeString();
@@ -75,7 +75,7 @@ async function registrarEvento() {
       }),
     });
   } catch (error) {
-    console.error("❌ Error al registrar evento:", error);
+    console.error("Error al registrar evento:", error);
   }
 
   // Actualizar estado visible
@@ -86,7 +86,7 @@ async function registrarEvento() {
       : "Servicio finalizado";
 }
 
-// 🎚️ Control manual del deslizador
+//Control manual del deslizador
 slider.addEventListener("mousedown", (e) => {
   deslizando = true;
   posInicial = e.clientX;
@@ -103,7 +103,7 @@ document.addEventListener("mousemove", (e) => {
     slider.style.left = `${distancia}px`;
   }
 
-  // Si llega al final → registrar evento
+  // Si llega al final -> registrar evento
   if (distancia > limite * 0.9) {
     deslizando = false;
     slider.style.left = "0";
@@ -125,5 +125,5 @@ document.addEventListener("mouseup", () => {
   }
 });
 
-// 🚀 Inicialización
+// Inicialización
 cargarDatos();
