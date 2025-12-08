@@ -1,20 +1,20 @@
-# Imagen base de Node.js
-FROM node:18
+# Imagen base ligera de Node.js
+FROM node:20-alpine
 
-# Establece el directorio de trabajo dentro del contenedor
+# Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copia los archivos de dependencias
+# Copiar archivos de dependencias
 COPY package*.json ./
 
-# Instala las dependencias
-RUN npm install
+# Instalar dependencias
+RUN npm install --production
 
-# Copia todo el código al contenedor
+# Copiar todo el código
 COPY . .
 
-# Expone el puerto en el que corre el servicio
+# Exponer el puerto del microservicio
 EXPOSE 3003
 
-# Comando que se ejecutará al iniciar el contenedor
+# Comando de inicio
 CMD ["node", "app.js"]

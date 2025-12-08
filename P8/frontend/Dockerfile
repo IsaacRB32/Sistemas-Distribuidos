@@ -1,9 +1,14 @@
+# Imagen base de nginx
 FROM nginx:alpine
 
-# Copiamos los archivos del frontend
+# Copiar archivos del frontend
 COPY . /usr/share/nginx/html
 
-# Copiamos la configuración personalizada de Nginx
+# Copiar configuración personalizada
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
+# Exponer el puerto
 EXPOSE 8081
+
+# Iniciar nginx
+CMD ["nginx", "-g", "daemon off;"]

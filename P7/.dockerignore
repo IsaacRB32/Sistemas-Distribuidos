@@ -1,0 +1,25 @@
+# Ignorar dependencias locales
+node_modules
+db/node_modules
+
+# Logs
+npm-debug.log
+*.log
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Config local
+.env
+
+# Archivos temporales
+*.zip
+*.rar
+*.tmp
+.DS_Store
+
