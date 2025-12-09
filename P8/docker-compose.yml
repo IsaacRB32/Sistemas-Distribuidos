@@ -1,7 +1,6 @@
 version: "3.9"
 
 services:
-
   conductor-service:
     build: ./conductor-service
     container_name: conductor-service
@@ -14,6 +13,8 @@ services:
       DB_PORT: 5432
     ports:
       - "3000:3000"
+    networks:
+      - p8_network
 
   servicio-service:
     build: ./servicio-service
@@ -27,6 +28,8 @@ services:
       DB_PORT: 5432
     ports:
       - "3001:3001"
+    networks:
+      - p8_network
 
   accion-service:
     build: ./accion-service
@@ -40,6 +43,8 @@ services:
       DB_PORT: 5432
     ports:
       - "3002:3002"
+    networks:
+      - p8_network
 
   evento-service:
     build: ./evento-service
@@ -53,6 +58,8 @@ services:
       DB_PORT: 5432
     ports:
       - "3003:3003"
+    networks:
+      - p8_network
 
   api-gateway:
     build: ./api-gateway
@@ -60,6 +67,8 @@ services:
     restart: always
     ports:
       - "8080:8080"
+    networks:
+      - p8_network
 
   frontend:
     build: ./frontend
@@ -67,4 +76,9 @@ services:
     restart: always
     ports:
       - "8081:8081"
-  
+    networks:
+      - p8_network
+
+networks:
+  p8_network:
+    driver: bridge
