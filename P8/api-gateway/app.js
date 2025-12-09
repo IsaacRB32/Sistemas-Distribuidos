@@ -24,6 +24,9 @@ app.use(
   createProxyMiddleware({
     target: "http://conductor-service:3000",
     changeOrigin: true,
+    pathRewrite: {
+      "^/api/conductores": "/conductores"
+    }
   })
 );
 
