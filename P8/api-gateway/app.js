@@ -23,9 +23,11 @@ app.use(
   "/api/conductores",
   createProxyMiddleware({
     target: "http://conductor-service:3000",
-    changeOrigin: true
+    changeOrigin: true,
+    pathRewrite: { "^/api/conductores": "/conductores" }
   })
 );
+
 
 
 // 🚍 SERVICIOS
@@ -33,9 +35,11 @@ app.use(
   "/api/servicios",
   createProxyMiddleware({
     target: "http://servicio-service:3001",
-    changeOrigin: true
+    changeOrigin: true,
+    pathRewrite: { "^/api/servicios": "/servicios" }
   })
 );
+
 
 
 // 🚍 ACCIONES
@@ -43,18 +47,22 @@ app.use(
   "/api/acciones",
   createProxyMiddleware({
     target: "http://accion-service:3002",
-    changeOrigin: true
+    changeOrigin: true,
+    pathRewrite: { "^/api/acciones": "/acciones" }
   })
 );
+
 
 // 🚍 EVENTOS
 app.use(
   "/api/eventos",
   createProxyMiddleware({
     target: "http://evento-service:3003",
-    changeOrigin: true
+    changeOrigin: true,
+    pathRewrite: { "^/api/eventos": "/eventos" }
   })
 );
+
 
 
 app.listen(process.env.PORT || 8080, () => {
