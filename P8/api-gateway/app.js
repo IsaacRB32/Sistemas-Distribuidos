@@ -25,10 +25,11 @@ app.use(
     target: "http://conductor-service:3000",
     changeOrigin: true,
     pathRewrite: {
-      "^/api/conductores": "/conductores"
+      "^/api/conductores": ""   // Esto quita TODO el prefijo
     }
   })
 );
+
 
 
 
