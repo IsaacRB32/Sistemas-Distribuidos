@@ -1,8 +1,13 @@
+-- ============================================
+-- FUNCION DEL TRIGGER
+-- ============================================
 
-DECLARE 
+CREATE OR REPLACE FUNCTION actualizar_estado_servicio()
+RETURNS trigger AS $$
+DECLARE
   v_estado INT;
 BEGIN
-  -- Buscar el estado que corresponde a la acción del nuevo evento
+  -- Buscar el estado correspondiente a la acción
   SELECT id_estado INTO v_estado
   FROM accion_estado
   WHERE id_accion = NEW.id_accion;
@@ -16,3 +21,15 @@ BEGIN
 
   RETURN NEW;
 END;
+$$ LANGUAGE plpgsql;
+
+-- ============================================
+-- CREACIÓN DEL TRIGGER
+-- ============================================
+
+DROP TRIGGER IF EXISTS tr_actualiza_estado_servicio ON eventos;
+
+CREATE TRIGGER tr_actualiza_estado_servicio
+AFTER INSERT ON eventos
+FOR EACH ROW
+EXECUTE FUNCTION actualizar_estado_servicio();
