@@ -10,6 +10,8 @@ app.use(cors());
 app.use(express.json());
 app.use("/eventos", eventosRouter);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Evento service running on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 3003;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Accion service running on port ${PORT}`);
 });
