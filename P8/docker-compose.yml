@@ -7,10 +7,10 @@ services:
     restart: always
     environment:
       DB_HOST: ${DB_HOST}
-      DB_USER: postgres
-      DB_PASSWORD: 324632
-      DB_NAME: pwa
-      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
     ports:
       - "3000:3000"
     networks:
@@ -22,10 +22,10 @@ services:
     restart: always
     environment:
       DB_HOST: ${DB_HOST}
-      DB_USER: postgres
-      DB_PASSWORD: 324632
-      DB_NAME: pwa
-      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
     ports:
       - "3001:3001"
     networks:
@@ -37,10 +37,10 @@ services:
     restart: always
     environment:
       DB_HOST: ${DB_HOST}
-      DB_USER: postgres
-      DB_PASSWORD: 324632
-      DB_NAME: pwa
-      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
     ports:
       - "3002:3002"
     networks:
@@ -52,10 +52,10 @@ services:
     restart: always
     environment:
       DB_HOST: ${DB_HOST}
-      DB_USER: postgres
-      DB_PASSWORD: 324632
-      DB_NAME: pwa
-      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
     ports:
       - "3003:3003"
     networks:
