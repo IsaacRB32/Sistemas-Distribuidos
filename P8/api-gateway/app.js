@@ -22,7 +22,7 @@ app.get("/api/test", (req, res) => {
 app.use(
   "/api/conductores",
   createProxyMiddleware({
-    target: "http://host.docker.internal:3000",
+    target: "http://conductor-service:3000",
     changeOrigin: true,
     pathRewrite: { "^/api/conductores": "" },
   })
@@ -32,7 +32,7 @@ app.use(
 app.use(
   "/api/servicios",
   createProxyMiddleware({
-    target: "http://host.docker.internal:3001",
+    target: "http://servicio-service:3001",
     changeOrigin: true,
     pathRewrite: { "^/api/servicios": "" },
   })
@@ -42,7 +42,7 @@ app.use(
 app.use(
   "/api/acciones",
   createProxyMiddleware({
-    target: "http://host.docker.internal:3002",
+    target: "http://accion-service:3002",
     changeOrigin: true,
     pathRewrite: { "^/api/acciones": "" },
   })
@@ -52,7 +52,7 @@ app.use(
 app.use(
   "/api/eventos",
   createProxyMiddleware({
-    target: "http://host.docker.internal:3003",
+    target: "http://evento-service:3003",
     changeOrigin: true,
     pathRewrite: { "^/api/eventos": "" },
   })
