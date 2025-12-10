@@ -9,9 +9,9 @@ dotenv.config();
 const app = express();
 app.use(cors());
 
-// Log de todas las peticiones que pasan por el gateway
+// Log simple
 app.use((req, _res, next) => {
-  console.log(`[Gateway] ${req.method} ${req.originalUrl}`);
+  console.log(`[Gateway] ${req.method} -> ${req.originalUrl}`);
   next();
 });
 
@@ -20,11 +20,11 @@ app.get("/api/test", (_req, res) => {
   res.json({ message: "API Gateway funcionando correctamente" });
 });
 
-// =======================
-//   PROXIES DEL GATEWAY
-// =======================
+// =========================
+//  PROXIES POR MICROSERVICIO
+// =========================
 
-// CONDUCTORES  ->  conductor-service:3000  (/conductores)
+// CONDUCTORES
 app.use(
   "/api/conductores",
   createProxyMiddleware({
@@ -34,7 +34,7 @@ app.use(
   })
 );
 
-// SERVICIOS  ->  servicio-service:3001  (/servicios)
+// SERVICIOS
 app.use(
   "/api/servicios",
   createProxyMiddleware({
@@ -44,7 +44,7 @@ app.use(
   })
 );
 
-// ACCIONES  ->  accion-service:3002  (/acciones)
+// ACCIONES
 app.use(
   "/api/acciones",
   createProxyMiddleware({
@@ -54,7 +54,7 @@ app.use(
   })
 );
 
-// EVENTOS  ->  evento-service:3003  (/eventos)
+// EVENTOS
 app.use(
   "/api/eventos",
   createProxyMiddleware({
@@ -64,7 +64,7 @@ app.use(
   })
 );
 
-// Arrancar gateway
+// Arranque del Gateway
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`API Gateway running on port ${PORT}`);
