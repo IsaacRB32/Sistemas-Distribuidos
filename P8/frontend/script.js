@@ -88,30 +88,27 @@ async function registrarEvento() {
 
 /* ============================
    CONTROL DEL DESLIZADOR
-   (mouse + touch)
+   (Pointer Events: mouse + touch)
    ============================ */
 
-// Devuelve la coordenada X tanto para mouse como para touch
-function getClientX(e) {
-  if (e.touches && e.touches.length > 0) {
-    return e.touches[0].clientX;
-  }
-  return e.clientX;
-}
+let arrastrando = false;
+let inicioX = 0;
 
 function iniciarDesliz(e) {
-  deslizando = true;
-  posInicial = getClientX(e);
+  arrastrando = true;
+  inicioX = e.clientX;
+  // Captura el puntero para que siga recibiendo eventos aunque el dedo salga del botón
+  if (slider.setPointerCapture) {
+    slider.setPointerCapture(e.pointerId);
+  }
 }
 
 function moverDesliz(e) {
-  if (!deslizando) return;
+  if (!arrastrando) return;
 
-  const xActual = getClientX(e);
-  const distancia = xActual - posInicial;
+  const distancia = e.clientX - inicioX;
   const limite = sliderTrack.clientWidth - slider.clientWidth;
 
-  // Limitar al rango [0, limite]
   let posicion = distancia;
   if (posicion < 0) posicion = 0;
   if (posicion > limite) posicion = limite;
@@ -120,9 +117,10 @@ function moverDesliz(e) {
 
   // Si llega casi al final -> registrar evento
   if (posicion >= limite * 0.9) {
-    deslizando = false;
+    arrastrando = false;
     slider.style.left = "0";
     pasoActual++;
+
     if (pasoActual < acciones.length) {
       registrarEvento();
     } else {
@@ -132,26 +130,20 @@ function moverDesliz(e) {
     }
   }
 
-  // En móvil evitamos que la página se desplace al arrastrar
-  if (e.cancelable) e.preventDefault();
+  if (e.cancelable) e.preventDefault();  // evita scroll mientras arrastras
 }
 
-function terminarDesliz() {
-  if (!deslizando) return;
-  deslizando = false;
+function terminarDesliz(e) {
+  if (!arrastrando) return;
+  arrastrando = false;
   slider.style.left = "0";
 }
 
-// Eventos de mouse
-slider.addEventListener("mousedown", iniciarDesliz);
-document.addEventListener("mousemove", moverDesliz);
-document.addEventListener("mouseup", terminarDesliz);
-
-// Eventos táctiles (móvil)
-slider.addEventListener("touchstart", iniciarDesliz);
-document.addEventListener("touchmove", moverDesliz, { passive: false });
-document.addEventListener("touchend", terminarDesliz);
-document.addEventListener("touchcancel", terminarDesliz);
+// Eventos unificados (PC + móvil)
+slider.addEventListener("pointerdown", iniciarDesliz);
+document.addEventListener("pointermove", moverDesliz);
+document.addEventListener("pointerup", terminarDesliz);
+document.addEventListener("pointercancel", terminarDesliz);
 
 // Inicialización
 cargarDatos();

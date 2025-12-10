@@ -70,7 +70,9 @@ body {
   top: 0;
   user-select: none;
   transition: background 0.3s;
+  touch-action: none;   /* IMPORTANTE para que funcione el drag en móvil */
 }
+
 
 .slider:active {
   cursor: grabbing;
@@ -108,7 +110,4 @@ body {
   margin-bottom: 5px;
   border-left: 3px solid #3498db;
   padding-left: 6px;
-}
-.slider {
-  touch-action: none;
 }
