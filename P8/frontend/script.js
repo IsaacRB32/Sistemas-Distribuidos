@@ -1,8 +1,8 @@
 // URL base del Gateway
 //const API_URL = "http://localhost:8080/api";
 //const API_URL = "http://api-gateway:8080/api";
-//const API_URL = "/api";
-const API_URL = "http://3.95.27.62:8080/api";
+const API_URL = "/api";
+
 
 
 // Secuencia de acciones del conductor

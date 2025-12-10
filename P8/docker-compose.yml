@@ -12,7 +12,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_PORT: ${DB_PORT}
     ports:
-      - "3000:3000"
+      - "3000:3000"          # opcional: sólo lo necesitas si quieres probar desde fuera
     networks:
       - p8_network
 
@@ -27,7 +27,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_PORT: ${DB_PORT}
     ports:
-      - "3001:3001"
+      - "3001:3001"          # idem
     networks:
       - p8_network
 
@@ -42,7 +42,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_PORT: ${DB_PORT}
     ports:
-      - "3002:3002"
+      - "3002:3002"          # idem
     networks:
       - p8_network
 
@@ -57,7 +57,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_PORT: ${DB_PORT}
     ports:
-      - "3003:3003"
+      - "3003:3003"          # idem
     networks:
       - p8_network
 
@@ -65,6 +65,11 @@ services:
     build: ./api-gateway
     container_name: api-gateway
     restart: always
+    depends_on:              # <- para que arranque después de los microservicios
+      - conductor-service
+      - servicio-service
+      - accion-service
+      - evento-service
     ports:
       - "8080:8080"
     networks:
@@ -74,8 +79,10 @@ services:
     build: ./frontend
     container_name: frontend
     restart: always
+    depends_on:              # <- para que arranque después del gateway
+      - api-gateway
     ports:
-      - "8081:8081"
+      - "8081:80"            # Nginx escuchando en 80 dentro del contenedor
     networks:
       - p8_network
 
