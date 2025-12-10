@@ -70,8 +70,10 @@ body {
   top: 0;
   user-select: none;
   transition: background 0.3s;
-  touch-action: none;   /* IMPORTANTE para que funcione el drag en móvil */
+  touch-action: none;      /* importante para móvil */
+  -webkit-user-drag: none; /* evita arrastre raro en algunos navegadores */
 }
+
 
 
 .slider:active {

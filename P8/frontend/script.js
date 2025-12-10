@@ -26,8 +26,6 @@ const listaEventos = document.getElementById("listaEventos");
 let pasoActual = 0;
 let idConductor = 1;
 let idServicio = 1;
-let deslizando = false;
-let posInicial = 0;
 
 // Cargar información del conductor y servicio desde los microservicios
 async function cargarDatos() {
@@ -88,37 +86,44 @@ async function registrarEvento() {
 
 /* ============================
    CONTROL DEL DESLIZADOR
-   (Pointer Events: mouse + touch)
+   (mouse + touch)
    ============================ */
 
 let arrastrando = false;
 let inicioX = 0;
+let inicioLeft = 0;
 
-function iniciarDesliz(e) {
-  arrastrando = true;
-  inicioX = e.clientX;
-  // Captura el puntero para que siga recibiendo eventos aunque el dedo salga del botón
-  if (slider.setPointerCapture) {
-    slider.setPointerCapture(e.pointerId);
+function getClientX(e) {
+  if (e.touches && e.touches.length > 0) {
+    return e.touches[0].clientX;
   }
+  return e.clientX;
 }
 
-function moverDesliz(e) {
+function startDrag(e) {
+  arrastrando = true;
+  inicioX = getClientX(e);
+  // posición actual del slider (por si en el futuro no está en 0)
+  inicioLeft = parseFloat(getComputedStyle(slider).left) || 0;
+}
+
+function onDrag(e) {
   if (!arrastrando) return;
 
-  const distancia = e.clientX - inicioX;
-  const limite = sliderTrack.clientWidth - slider.clientWidth;
+  const actualX = getClientX(e);
+  const delta = actualX - inicioX;
+  const max = sliderTrack.clientWidth - slider.clientWidth;
 
-  let posicion = distancia;
-  if (posicion < 0) posicion = 0;
-  if (posicion > limite) posicion = limite;
+  let nuevoLeft = inicioLeft + delta;
+  if (nuevoLeft < 0) nuevoLeft = 0;
+  if (nuevoLeft > max) nuevoLeft = max;
 
-  slider.style.left = `${posicion}px`;
+  slider.style.left = `${nuevoLeft}px`;
 
-  // Si llega casi al final -> registrar evento
-  if (posicion >= limite * 0.9) {
+  // Si llega al final -> registrar evento
+  if (nuevoLeft >= max * 0.9) {
     arrastrando = false;
-    slider.style.left = "0";
+    slider.style.left = "0px";
     pasoActual++;
 
     if (pasoActual < acciones.length) {
@@ -130,20 +135,26 @@ function moverDesliz(e) {
     }
   }
 
-  if (e.cancelable) e.preventDefault();  // evita scroll mientras arrastras
+  // En móvil evitamos que la página intente hacer scroll al arrastrar
+  if (e.cancelable) e.preventDefault();
 }
 
-function terminarDesliz(e) {
+function endDrag(_e) {
   if (!arrastrando) return;
   arrastrando = false;
-  slider.style.left = "0";
+  slider.style.left = "0px";
 }
 
-// Eventos unificados (PC + móvil)
-slider.addEventListener("pointerdown", iniciarDesliz);
-document.addEventListener("pointermove", moverDesliz);
-document.addEventListener("pointerup", terminarDesliz);
-document.addEventListener("pointercancel", terminarDesliz);
+// Eventos de mouse
+slider.addEventListener("mousedown", startDrag);
+document.addEventListener("mousemove", onDrag);
+document.addEventListener("mouseup", endDrag);
+
+// Eventos de touch (móvil)
+slider.addEventListener("touchstart", startDrag, { passive: true });
+document.addEventListener("touchmove", onDrag, { passive: false });
+document.addEventListener("touchend", endDrag);
+document.addEventListener("touchcancel", endDrag);
 
 // Inicialización
 cargarDatos();
