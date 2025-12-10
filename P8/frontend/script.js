@@ -3,8 +3,6 @@
 //const API_URL = "http://api-gateway:8080/api";
 const API_URL = "/api";
 
-
-
 // Secuencia de acciones del conductor
 const acciones = [
   "Iniciar servicio",
@@ -88,25 +86,40 @@ async function registrarEvento() {
       : "Servicio finalizado";
 }
 
-//Control manual del deslizador
-slider.addEventListener("mousedown", (e) => {
-  deslizando = true;
-  posInicial = e.clientX;
-});
+/* ============================
+   CONTROL DEL DESLIZADOR
+   (mouse + touch)
+   ============================ */
 
-document.addEventListener("mousemove", (e) => {
+// Devuelve la coordenada X tanto para mouse como para touch
+function getClientX(e) {
+  if (e.touches && e.touches.length > 0) {
+    return e.touches[0].clientX;
+  }
+  return e.clientX;
+}
+
+function iniciarDesliz(e) {
+  deslizando = true;
+  posInicial = getClientX(e);
+}
+
+function moverDesliz(e) {
   if (!deslizando) return;
 
-  const distancia = e.clientX - posInicial;
+  const xActual = getClientX(e);
+  const distancia = xActual - posInicial;
   const limite = sliderTrack.clientWidth - slider.clientWidth;
 
-  // Mover visualmente
-  if (distancia >= 0 && distancia <= limite) {
-    slider.style.left = `${distancia}px`;
-  }
+  // Limitar al rango [0, limite]
+  let posicion = distancia;
+  if (posicion < 0) posicion = 0;
+  if (posicion > limite) posicion = limite;
 
-  // Si llega al final -> registrar evento
-  if (distancia > limite * 0.9) {
+  slider.style.left = `${posicion}px`;
+
+  // Si llega casi al final -> registrar evento
+  if (posicion >= limite * 0.9) {
     deslizando = false;
     slider.style.left = "0";
     pasoActual++;
@@ -118,14 +131,27 @@ document.addEventListener("mousemove", (e) => {
       slider.style.background = "#2ecc71";
     }
   }
-});
 
-document.addEventListener("mouseup", () => {
-  if (deslizando) {
-    deslizando = false;
-    slider.style.left = "0";
-  }
-});
+  // En móvil evitamos que la página se desplace al arrastrar
+  if (e.cancelable) e.preventDefault();
+}
+
+function terminarDesliz() {
+  if (!deslizando) return;
+  deslizando = false;
+  slider.style.left = "0";
+}
+
+// Eventos de mouse
+slider.addEventListener("mousedown", iniciarDesliz);
+document.addEventListener("mousemove", moverDesliz);
+document.addEventListener("mouseup", terminarDesliz);
+
+// Eventos táctiles (móvil)
+slider.addEventListener("touchstart", iniciarDesliz);
+document.addEventListener("touchmove", moverDesliz, { passive: false });
+document.addEventListener("touchend", terminarDesliz);
+document.addEventListener("touchcancel", terminarDesliz);
 
 // Inicialización
 cargarDatos();
