@@ -2,7 +2,7 @@
 //const API_URL = "http://localhost:8080/api";
 //const API_URL = "http://api-gateway:8080/api";
 //const API_URL = "/api";
-const API_URL = "http://3.238.125.65:8080/api";
+const API_URL = "http://3.95.27.62:8080/api";
 
 
 // Secuencia de acciones del conductor
